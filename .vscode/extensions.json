@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "dart-code.flutter",
+    "dart-code.dart-code",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "toba.vsfire",
+    "hashicorp.terraform",
+    "editorconfig.editorconfig"
+  ]
+}

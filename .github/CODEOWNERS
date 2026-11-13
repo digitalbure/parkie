@@ -1,0 +1,7 @@
+# Default reviewers. Replace with GitHub usernames or teams once the team is set.
+*                 @digitalbure
+/functions/       @digitalbure
+/firestore.rules  @digitalbure
+/storage.rules    @digitalbure
+/infra/           @digitalbure
+/docs/adr/        @digitalbure

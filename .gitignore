@@ -1,0 +1,52 @@
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Node
+node_modules/
+npm-debug.log*
+functions/lib/
+.next/
+out/
+coverage/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.g.dart.tmp
+android/key.properties
+*.jks
+*.keystore
+ios/Pods/
+ios/.symlinks/
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+emulator-data/
+.runtimeconfig.json
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# Secrets – never commit
+.env
+.env.*
+!.env.example
+service-account*.json
+google-services.json
+GoogleService-Info.plist

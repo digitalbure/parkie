@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  functions:
+    name: Functions – lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: functions
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  flutter:
+    name: Flutter apps – analyze & test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [apps/driver, apps/officer, packages/ui, packages/models]
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: |
+          if [ -f "${{ matrix.app }}/pubspec.yaml" ]; then echo "exists=true" >> "$GITHUB_OUTPUT"; else echo "exists=false" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.check.outputs.exists == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - if: steps.check.outputs.exists == 'true'
+        working-directory: ${{ matrix.app }}
+        run: |
+          flutter pub get
+          dart format --output=none --set-exit-if-changed .
+          flutter analyze
+          flutter test
+      - if: steps.check.outputs.exists != 'true'
+        run: echo "${{ matrix.app }} not scaffolded yet – skipping."
+
+  admin:
+    name: Admin web – lint & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        run: |
+          if [ -f apps/admin/package.json ]; then echo "exists=true" >> "$GITHUB_OUTPUT"; else echo "exists=false" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.check.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - if: steps.check.outputs.exists == 'true'
+        working-directory: apps/admin
+        run: npm ci && npm run lint && npm run build
+      - if: steps.check.outputs.exists != 'true'
+        run: echo "apps/admin not scaffolded yet – skipping."
